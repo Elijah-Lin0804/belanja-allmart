@@ -408,25 +408,20 @@
             <textarea id="customNotes" class="notes-textarea" placeholder="Tulis di sini jika ada barang lain... (如果需要其他東西請寫在這裡...)"></textarea>
         </div>
 
-        <div id="summarySection" class="summary-section">
-            <div class="summary-title">Area Konfirmasi Majikan</div>
-            <div class="summary-title">(雇主確認專區)</div>
+        <div id="summarySection" class="summary-section" style="display: none; margin-top: 30px; margin-bottom: 20px;">
+            <div class="summary-title">Daftar Pilihan (已選物資清單)</div>
             <div id="orderTimestamp" class="timestamp">Waktu (時間): --</div>
             
             <ul id="summaryList" class="summary-list">
-                <li class="empty-msg">Belum ada barang yang dipilih. <br>(目前尚未選擇任何物品。)</li>
-            </ul>
+                </ul>
             
             <div id="summaryNotesDisplay"></div>
-            <div style="margin-top: 15px; text-align: center;">
-            <button id="sendToSpreadsheetBtn" class="btn-boss" style="background-color: #007bff;" onclick="sendDataToGoogle()">
-                ✈️ Kirim ke Majikan (傳送清單給雇主)
-            </button>
-            <div id="uploadStatus" style="margin-top: 8px; font-size: 0.9.rem; font-weight: bold; color: #666;"></div>
-</div>
             
-            <div class="boss-action">
-                <button id="bossConfirmBtn" class="btn-boss" onclick="bossConfirmOrder()" disabled>Saya sudah melihat & memesan (雇主已確認並訂購)</button>
+            <div style="margin-top: 20px; text-align: center;">
+                <button id="sendToSpreadsheetBtn" class="btn-boss" style="background-color: #007bff;" onclick="sendDataToGoogle()">
+                    ✈️ Kirim ke Majikan (傳送清單給雇主)
+                </button>
+                <div id="uploadStatus" style="margin-top: 8px; font-size: 0.9rem; font-weight: bold; color: #666;"></div>
             </div>
         </div>
 
@@ -437,7 +432,9 @@
     </div>
 
     <script>
-        // 增減數量的 JS 邏輯
+        //https://script.google.com/macros/s/AKfycbypOw2DhLS436PHvzFVyTQr6izzd5i83ngLkBNjn-nRPTbqv2JVJRsqL4eqeRzJZkM4/exec
+
+        // 1. 增減數量的 JS 邏輯
         function changeCount(button, amount) {
             const counterDiv = button.parentElement;
             const countValueDiv = counterDiv.querySelector('.count-value');
@@ -449,25 +446,28 @@
             countValueDiv.innerText = currentCount;
         }
 
-        // 收集選取資料並呈呈現於網頁下方
+        // 2. 收集選取資料並呈呈現在網頁下方（防呆核心）
         function generateSummary() {
             const cards = document.querySelectorAll('.item-card');
             const summaryList = document.getElementById('summaryList');
             const timestampDiv = document.getElementById('orderTimestamp');
             const notesDisplay = document.getElementById('summaryNotesDisplay');
-            const bossBtn = document.getElementById('bossConfirmBtn');
             const customNotesVal = document.getElementById('customNotes').value.trim();
+            const summarySection = document.getElementById('summarySection');
+            const sendBtn = document.getElementById('sendToSpreadsheetBtn');
+            const statusDiv = document.getElementById('uploadStatus');
             
-            // 先清空舊內容並恢復確認按鈕狀態
+            // 重置傳送按鈕與狀態提示
             summaryList.innerHTML = "";
             notesDisplay.innerHTML = "";
-            bossBtn.disabled = false;
-            bossBtn.style.backgroundColor = "#28a745";
-            bossBtn.innerText = "Saya sudah melihat & memesan (雇主已確認並訂購)";
+            sendBtn.disabled = false;
+            sendBtn.style.backgroundColor = "#007bff";
+            sendBtn.innerText = "✈️ Kirim ke Majikan (傳送清單給雇主)";
+            statusDiv.innerText = "";
             
             let hasItems = false;
 
-            // 1. 處理品項清單
+            // 處理品項清單
             cards.forEach(card => {
                 const name = card.getAttribute('data-name');
                 const count = parseInt(card.querySelector('.count-value').innerText);
@@ -480,22 +480,23 @@
                 }
             });
 
-            // 2. 處理備註內容
+            // 處理備註內容
             if (customNotesVal !== "") {
                 notesDisplay.innerHTML = `<div class="summary-notes"><strong>Catatan (備註):</strong><br>${customNotesVal.replace(/\n/g, '<br>')}</div>`;
                 hasItems = true; 
             }
 
-            // 如果品項跟備註都是空的
+            // 【防呆攔截】：如果品項跟備註都是空的，拒絕產生清單
             if (!hasItems) {
-                summaryList.innerHTML = `<li class="empty-msg">Belum ada barang yang dipilih. <br>(目前尚未選擇任何物品。)</li>`;
-                timestampDiv.innerText = "Waktu (時間): --";
-                bossBtn.disabled = true;
-                alert("Silakan pilih barang atau isi catatan terlebih dahulu. (請先選擇品項或填寫備註。)");
+                summarySection.style.display = "none"; // 隱藏區塊
+                alert("Silakan pilih barang atau isi catatan terlebih dahulu.\n(請先選擇品項或填寫備註，再顯示清單。)");
                 return;
             }
 
-            // 3. 產生目前日期與時間
+            // 顯示確認區塊
+            summarySection.style.display = "block";
+
+            // 產生目前日期與時間
             const now = new Date();
             const year = now.getFullYear();
             const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -507,79 +508,75 @@
             timestampDiv.innerText = `Waktu (時間): ${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
 
             // 平滑滾動到確認區
-            document.getElementById('summarySection').scrollIntoView({ behavior: 'smooth' });
+            summarySection.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // 雇主點擊已處理確認按鈕
-        function bossConfirmOrder() {
-            const bossBtn = document.getElementById('bossConfirmBtn');
-            bossBtn.disabled = true;
-            bossBtn.style.backgroundColor = "#6c757d";
-            bossBtn.innerText = "✓ Sudah dipesan oleh Majikan (雇主已處理並訂購完成)";
-            alert("已記錄：雇主確認已看到此清單並完成訂購！");
-        }
-        // 新增：將資料傳送到 Google 試算表的邏輯
-function sendDataToGoogle() {
-    // ⚠️ 請在下方單引號內填入您剛才複製的 Google Web App URL 網址
-    const webAppUrl = 'https://script.google.com/macros/s/AKfycbypOw2DhLS436PHvzFVyTQr6izzd5i83ngLkBNjn-nRPTbqv2JVJRsqL4eqeRzJZkM4/exec'; 
-    
-    const sendBtn = document.getElementById('sendToSpreadsheetBtn');
-    const statusDiv = document.getElementById('uploadStatus');
-    const timestamp = document.getElementById('orderTimestamp').innerText.replace('Waktu (時間): ', '');
-    const notesVal = document.getElementById('customNotes').value.trim();
-    
-    // 1. 收集目前畫面上被選中的品項
-    let itemSummary = [];
-    const cards = document.querySelectorAll('.item-card');
-    cards.forEach(card => {
-        const name = card.getAttribute('data-name');
-        const count = parseInt(card.querySelector('.count-value').innerText);
-        if (count > 0) {
-            itemSummary.push(`${name} x${count}`);
-        }
-    });
-    
-    // 2. 組合要傳送的資料包裹
-    const payload = {
-        timestamp: timestamp,
-        items: itemSummary.join('\n'), // 用換行把品項連起來
-        notes: notesVal || '無備註'
-    };
-    
-    // 3. 修改按鈕狀態，防止重複點擊
-    sendBtn.disabled = true;
-    sendBtn.style.backgroundColor = "#6c757d";
-    sendBtn.innerText = "Mengirim... (傳送中...)";
-    statusDiv.innerText = "⏳ Sedang mengirim data ke awan... (正在儲存至雲端...)";
-    statusDiv.style.color = "#666";
+        // 3. 將資料傳送到 Google 試算表（含自動清空功能）
+        function sendDataToGoogle() {
+            // ⚠️ 請務必在下方重新填入您的 Google Web App URL 網址
+            const webAppUrl = 'https://script.google.com/macros/s/AKfycbypOw2DhLS436PHvzFVyTQr6izzd5i83ngLkBNjn-nRPTbqv2JVJRsqL4eqeRzJZkM4/exec'; 
+            
+            const sendBtn = document.getElementById('sendToSpreadsheetBtn');
+            const statusDiv = document.getElementById('uploadStatus');
+            const timestamp = document.getElementById('orderTimestamp').innerText.replace('Waktu (時間): ', '');
+            const notesVal = document.getElementById('customNotes').value.trim();
+            
+            let itemSummary = [];
+            const cards = document.querySelectorAll('.item-card');
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name');
+                const count = parseInt(card.querySelector('.count-value').innerText);
+                if (count > 0) {
+                    itemSummary.push(`${name} x${count}`);
+                }
+            });
+            
+            const payload = {
+                timestamp: timestamp,
+                items: itemSummary.join('\n'),
+                notes: notesVal || '無備註'
+            };
+            
+            sendBtn.disabled = true;
+            sendBtn.style.backgroundColor = "#6c757d";
+            sendBtn.innerText = "Mengirim... (傳送中...)";
+            statusDiv.innerText = "⏳ Sedang mengirim data... (正在儲存至雲端...)";
 
-    // 4. 使用 fetch API 發送 POST 請求給 Google 試算表
-    fetch(webAppUrl, {
-        method: 'POST',
-        mode: 'no-cors', // 必須使用 no-cors 模式來避開瀏覽器跨網域限制
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-    })
-    .then(() => {
-        // 因為 no-cors 模式下無法讀取回傳值，只要成功發出沒有報錯，就視為成功
-        sendBtn.innerText = "✓ Sukses Dikirim (已成功傳送！)";
-        sendBtn.style.backgroundColor = "#28a745";
-        statusDiv.innerText = "🎉 Sukses! Majikan sudah bisa melihat. (成功！雇主已可在雲端查閱。)";
-        statusDiv.style.color = "#28a745";
-        alert("傳送成功！這筆清單已經寫入雇主的 Google 試算表中囉！");
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        sendBtn.disabled = false;
-        sendBtn.style.backgroundColor = "#007bff";
-        sendBtn.innerText = "✈️ Kirim ke Majikan (重新傳送)";
-        statusDiv.innerText = "❌ Gagal mengirim. Coba lagi. (傳送失敗，請重試。)";
-        statusDiv.style.color = "#e60012";
-        alert("傳送失敗，請檢查網路連線。");
-    });
-}
+            fetch(webAppUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                sendBtn.innerText = "✓ Sukses Dikirim (已成功傳送！)";
+                sendBtn.style.backgroundColor = "#28a745";
+                statusDiv.innerText = "🎉 Sukses! (成功！雇主已可在雲端查閱。)";
+                statusDiv.style.color = "#28a745";
+                
+                alert("傳送成功！清單已送達雲端。網頁將自動重置清空。");
+                
+                // 【優化：自動清空重置邏輯】
+                // 1. 所有品項計數歸零
+                document.querySelectorAll('.count-value').forEach(el => el.innerText = "0");
+                // 2. 清空輸入框
+                document.getElementById('customNotes').value = "";
+                // 3. 2秒後悄悄隱藏下方區塊，恢復初始乾淨畫面
+                setTimeout(() => {
+                    document.getElementById('summarySection').style.display = "none";
+                    window.scrollTo({ top: 0, behavior: 'smooth' }); // 自動滾回最上方
+                }, 2000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                sendBtn.disabled = false;
+                sendBtn.style.backgroundColor = "#007bff";
+                sendBtn.innerText = "✈️ Kirim ke Majikan (重新傳送)";
+                statusDiv.innerText = "❌ Gagal. (傳送失敗，請重試。)";
+                statusDiv.style.color = "#e60012";
+                alert("傳送失敗，請檢查網路連線。");
+            });
+        }
     </script>
 </body>
 </html>
