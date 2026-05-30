@@ -418,6 +418,12 @@
             </ul>
             
             <div id="summaryNotesDisplay"></div>
+            <div style="margin-top: 15px; text-align: center;">
+            <button id="sendToSpreadsheetBtn" class="btn-boss" style="background-color: #007bff;" onclick="sendDataToGoogle()">
+                ✈️ Kirim ke Majikan (傳送清單給雇主)
+            </button>
+            <div id="uploadStatus" style="margin-top: 8px; font-size: 0.9.rem; font-weight: bold; color: #666;"></div>
+</div>
             
             <div class="boss-action">
                 <button id="bossConfirmBtn" class="btn-boss" onclick="bossConfirmOrder()" disabled>Saya sudah melihat & memesan (雇主已確認並訂購)</button>
@@ -509,9 +515,71 @@
             const bossBtn = document.getElementById('bossConfirmBtn');
             bossBtn.disabled = true;
             bossBtn.style.backgroundColor = "#6c757d";
-            bossBtn.innerText = "✓ Sudah dipesan oleh Majikan (雇主已處理/已訂購完毕)";
+            bossBtn.innerText = "✓ Sudah dipesan oleh Majikan (雇主已處理並訂購完成)";
             alert("已記錄：雇主確認已看到此清單並完成訂購！");
         }
+        // 新增：將資料傳送到 Google 試算表的邏輯
+function sendDataToGoogle() {
+    // ⚠️ 請在下方單引號內填入您剛才複製的 Google Web App URL 網址
+    const webAppUrl = 'https://script.google.com/macros/s/AKfycbypOw2DhLS436PHvzFVyTQr6izzd5i83ngLkBNjn-nRPTbqv2JVJRsqL4eqeRzJZkM4/exec'; 
+    
+    const sendBtn = document.getElementById('sendToSpreadsheetBtn');
+    const statusDiv = document.getElementById('uploadStatus');
+    const timestamp = document.getElementById('orderTimestamp').innerText.replace('Waktu (時間): ', '');
+    const notesVal = document.getElementById('customNotes').value.trim();
+    
+    // 1. 收集目前畫面上被選中的品項
+    let itemSummary = [];
+    const cards = document.querySelectorAll('.item-card');
+    cards.forEach(card => {
+        const name = card.getAttribute('data-name');
+        const count = parseInt(card.querySelector('.count-value').innerText);
+        if (count > 0) {
+            itemSummary.push(`${name} x${count}`);
+        }
+    });
+    
+    // 2. 組合要傳送的資料包裹
+    const payload = {
+        timestamp: timestamp,
+        items: itemSummary.join('\n'), // 用換行把品項連起來
+        notes: notesVal || '無備註'
+    };
+    
+    // 3. 修改按鈕狀態，防止重複點擊
+    sendBtn.disabled = true;
+    sendBtn.style.backgroundColor = "#6c757d";
+    sendBtn.innerText = "Mengirim... (傳送中...)";
+    statusDiv.innerText = "⏳ Sedang mengirim data ke awan... (正在儲存至雲端...)";
+    statusDiv.style.color = "#666";
+
+    // 4. 使用 fetch API 發送 POST 請求給 Google 試算表
+    fetch(webAppUrl, {
+        method: 'POST',
+        mode: 'no-cors', // 必須使用 no-cors 模式來避開瀏覽器跨網域限制
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(() => {
+        // 因為 no-cors 模式下無法讀取回傳值，只要成功發出沒有報錯，就視為成功
+        sendBtn.innerText = "✓ Sukses Dikirim (已成功傳送！)";
+        sendBtn.style.backgroundColor = "#28a745";
+        statusDiv.innerText = "🎉 Sukses! Majikan sudah bisa melihat. (成功！雇主已可在雲端查閱。)";
+        statusDiv.style.color = "#28a745";
+        alert("傳送成功！這筆清單已經寫入雇主的 Google 試算表中囉！");
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        sendBtn.disabled = false;
+        sendBtn.style.backgroundColor = "#007bff";
+        sendBtn.innerText = "✈️ Kirim ke Majikan (重新傳送)";
+        statusDiv.innerText = "❌ Gagal mengirim. Coba lagi. (傳送失敗，請重試。)";
+        statusDiv.style.color = "#e60012";
+        alert("傳送失敗，請檢查網路連線。");
+    });
+}
     </script>
 </body>
 </html>
