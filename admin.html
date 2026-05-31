@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belanja Allmart - 雇主管理後台</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --bg-color: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --status-pending: #fff9db; /* 淡黃 */
+            --status-pending-border: #fcc419;
+            --status-progress: #e7f5ff; /* 淡藍 */
+            --status-progress-border: #339af0;
+            --status-completed: #f1f3f5; /* 淡灰 */
+            --status-completed-border: #adb5bd;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 15px;
+            padding-bottom: 60px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px 0;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            color: #2b3a4a;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* 密碼驗證遮罩 */
+        #auth-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .auth-box {
+            background: var(--card-bg);
+            padding: 30px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .auth-box input {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .auth-box button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        /* 主內容區 */
+        #main-content {
+            display: none;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .loading-text {
+            text-align: center;
+            color: #888;
+            padding: 20px;
+            font-size: 1.1rem;
+        }
+
+        /* 卡片樣式 */
+        .order-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 6px solid var(--status-completed-border);
+            transition: all 0.3s ease;
+        }
+
+        .order-card.pending { border-left-color: var(--status-pending-border); background-color: var(--status-pending); }
+        .order-card.progress { border-left-color: var(--status-progress-border); background-color: var(--status-progress); }
+        .order-card.completed { border-left-color: var(--status-completed-border); background-color: var(--status-completed); opacity: 0.75; }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .status-badge {
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        .pending .status-badge { background: var(--status-pending-border); color: #fff; }
+        .progress .status-badge { background: var(--status-progress-border); color: #fff; }
+        .completed .status-badge { background: var(--status-completed-border); color: #fff; }
+
+        .card-body .items-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #222;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .card-body .notes-text {
+            font-size: 0.95rem;
+            color: #555;
+            background: rgba(255,255,255,0.6);
+            padding: 8px;
+            border-radius: 6px;
+            margin-top: 5px;
+            border-left: 3px solid #ddd;
+        }
+
+        /* 動作按鈕區 */
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 8px 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-progress { background-color: #339af0; color: white; }
+        .btn-completed { background-color: #5c7cfa; color: white; }
+        .btn-reset { background-color: #fab005; color: white; }
+
+        .btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* 浮動重整理按鈕 */
+        .refresh-fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="auth-overlay">
+        <div class="auth-box">
+            <h2>Belanja Allmart</h2>
+            <p style="color:#666; margin-top:5px;">請輸入雇主管理密碼</p>
+            <input type="password" id="password-input" placeholder="請輸入密碼">
+            <button onclick="verifyPassword()">登入管理後台</button>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <header>
+            <h1>🛒 採購清單後台管理</h1>
+            <p>即時同步 Google 試算表資料</p>
+        </header>
+
+        <div id="list-container">
+            <div class="loading-text">資料載入中...</div>
+        </div>
+    </div>
+
+    <button class="refresh-fab" onclick="fetchOrders()">🔄</button>
+
+    <script>
+        // ⚠️ 請填入你升級發布後的 Google Web App URL
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbypOw2DhLS436PHvzFVyTQr6izzd5i83ngLkBNjn-nRPTbqv2JVJRsqL4eqeRzJZkM4/exec"; 
+        
+        // 🔒 設定你的後台暗號（可自由更改）
+        const MASTER_PASSWORD = "myhome123"; 
+
+        // 1. 驗證密碼
+        function verifyPassword() {
+            const input = document.getElementById('password-input').value;
+            if (input === MASTER_PASSWORD) {
+                document.getElementById('auth-overlay').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                fetchOrders(); // 密碼正確，開始抓資料
+            } else {
+                alert('密碼錯誤！請重新輸入。');
+                document.getElementById('password-input').value = '';
+            }
+        }
+
+        // 支援密碼欄位按 Enter 直接登入
+        document.getElementById('password-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') verifyPassword();
+        });
+
+        // 2. 從後端 GAS 獲取所有採購資料 (GET)
+        function fetchOrders() {
+            const container = document.getElementById('list-container');
+            container.innerHTML = '<div class="loading-text">正在讀取最新雲端資料...</div>';
+
+            fetch(GAS_WEB_APP_URL)
+                .then(response => response.json())
+                .then(res => {
+                    if (res.status === "success") {
+                        renderCards(res.data);
+                    } else {
+                        container.innerHTML = `<div class="loading-text" style="color:red;">載入失敗：${res.message}</div>`;
+                    }
+                })
+                .catch(err => {
+                    container.innerHTML = `<div class="loading-text" style="color:red;">網路錯誤，無法連線至資料庫。</div>`;
+                    console.error(err);
+                });
+        }
+
+        // 3. 將資料渲染成精美卡片
+        function renderCards(orders) {
+            const container = document.getElementById('list-container');
+            if (!orders || orders.length === 0) {
+                container.innerHTML = '<div class="loading-text">目前沒有任何採購需求紀錄：）</div>';
+                return;
+            }
+
+            container.innerHTML = ''; // 清空載入中字樣
+            
+            // 將最新的資料排在最上面 (倒序排列)
+            orders.reverse().forEach(order => {
+                let statusClass = "pending";
+                if (order.status === "採購中") statusClass = "progress";
+                if (order.status === "已完成") statusClass = "completed";
+
+                // 將 ISO 時間字串轉成好讀的格式 (月/日 時:分)
+                let dateStr = "未知時間";
+                if (order.timestamp) {
+                    const d = new Date(order.timestamp);
+                    dateStr = `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+                }
+
+                const card = document.createElement('div');
+                card.className = `order-card ${statusClass}`;
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span>⏰ ${dateStr}</span>
+                        <span class="status-badge">${order.status}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="items-title">${order.items}</div>
+                        ${order.notes ? `<div class="notes-text">💡 備註：${order.notes}</div>` : ''}
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn btn-progress" onclick="updateStatus(${order.row}, '採購中')" ${order.status === '採購中' ? 'disabled' : ''}>設為採購中</button>
+                        <button class="btn btn-completed" onclick="updateStatus(${order.row}, '已完成')" ${order.status === '已完成' ? 'disabled' : ''}>設為已完成</button>
+                        <button class="btn btn-reset" onclick="updateStatus(${order.row}, '未處理')" ${order.status === '未處理' ? 'disabled' : ''}>重設</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // 4. 修改狀態發送到後端 (POST)
+        function updateStatus(rowId, newStatus) {
+            // 優雅鎖定所有按鈕防止重複點擊
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => btn.disabled = true);
+
+            fetch(GAS_WEB_APP_URL, {
+                method: "POST",
+                body: JSON.stringify({
+                    "action": "updateStatus",
+                    "row": rowId,
+                    "status": newStatus
+                })
+            })
+            .then(response => response.json())
+            .then(res => {
+                if (res.status === "success") {
+                    fetchOrders(); // 狀態改成功後，重新整理列表畫面
+                } else {
+                    alert("更新失敗：" + res.message);
+                    fetchOrders();
+                }
+            })
+            .catch(err => {
+                alert("網路連線失敗，請檢查網路。");
+                fetchOrders();
+            });
+        }
+    </script>
+</body>
+</html>
