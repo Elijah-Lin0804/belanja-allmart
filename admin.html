@@ -120,7 +120,7 @@
 
         .order-card.pending { border-left-color: var(--status-pending-border); background-color: var(--status-pending); }
         .order-card.progress { border-left-color: var(--status-progress-border); background-color: var(--status-progress); }
-        .order-card.completed { border-left-color: var(--status-completed-border); background-color: var(--status-completed); opacity: 0.75; }
+        .order-card.completed { border-left-color: var(--status-completed-border); background-color: var(--status-completed); opacity: 0.55; /* 設為已完成後變為更淡的淺色 */ }
 
         .card-header {
             display: flex;
@@ -128,7 +128,7 @@
             align-items: center;
             border-bottom: 1px solid rgba(0,0,0,0.05);
             padding-bottom: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             font-size: 0.85rem;
             color: #666;
         }
@@ -143,34 +143,61 @@
         .progress .status-badge { background: var(--status-progress-border); color: #fff; }
         .completed .status-badge { background: var(--status-completed-border); color: #fff; }
 
-        .card-body .items-title {
-            font-weight: bold;
+        /* 🛒 新增：品項 Checkbox 條列式排版 */
+        .checklist-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
             font-size: 1.1rem;
+            font-weight: 500;
             color: #222;
-            margin-bottom: 6px;
-            line-height: 1.4;
+            cursor: pointer;
+            padding: 4px 0;
+            user-select: none;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: var(--primary-color); /* 自訂打勾顏色 */
+        }
+
+        /* 勾選後文字變淡並加上刪除線 */
+        .checklist-item input[type="checkbox"]:checked + span {
+            color: #888;
+            text-decoration: line-through;
         }
 
         .card-body .notes-text {
             font-size: 0.95rem;
             color: #555;
-            background: rgba(255,255,255,0.6);
-            padding: 8px;
-            border-radius: 6px;
-            margin-top: 5px;
-            border-left: 3px solid #ddd;
+            background: rgba(255,255,255,0.7);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 12px;
+            border-left: 4px solid #ccc;
         }
 
         /* 動作按鈕區 */
         .card-actions {
             display: flex;
             gap: 10px;
-            margin-top: 12px;
+            margin-top: 15px;
+            border-top: 1px dashed rgba(0,0,0,0.05);
+            padding-top: 12px;
         }
 
         .btn {
             flex: 1;
-            padding: 8px 10px;
+            padding: 10px 10px;
             border: none;
             border-radius: 6px;
             font-size: 0.9rem;
@@ -205,6 +232,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            z-index: 999;
         }
     </style>
 </head>
@@ -237,7 +265,7 @@
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbypOw2DhLS436PHvzFVyTQr6izzd5i83ngLkBNjn-nRPTbqv2JVJRsqL4eqeRzJZkM4/exec"; 
         
         // 🔒 設定你的後台暗號（可自由更改）
-        const MASTER_PASSWORD = "myhome123"; 
+        const MASTER_PASSWORD = "910"; 
 
         // 1. 驗證密碼
         function verifyPassword() {
@@ -277,7 +305,7 @@
                 });
         }
 
-        // 3. 將資料渲染成精美卡片
+        // 3. 將資料排序並渲染成精美卡片
         function renderCards(orders) {
             const container = document.getElementById('list-container');
             if (!orders || orders.length === 0) {
@@ -287,8 +315,15 @@
 
             container.innerHTML = ''; // 清空載入中字樣
             
-            // 將最新的資料排在最上面 (倒序排列)
-            orders.reverse().forEach(order => {
+            // 🔄 排序邏輯：未處理與採購中排上面（依時間倒序），「已完成」排在最下方
+            orders.sort((a, b) => {
+                if (a.status === "已完成" && b.status !== "已完成") return 1;
+                if (a.status !== "已完成" && b.status === "已完成") return -1;
+                // 如果狀態同為已完成，或同為未完成，則依據 row 號碼由大到小排序（最新時間在最上）
+                return b.row - a.row;
+            });
+
+            orders.forEach(order => {
                 let statusClass = "pending";
                 if (order.status === "採購中") statusClass = "progress";
                 if (order.status === "已完成") statusClass = "completed";
@@ -300,6 +335,23 @@
                     dateStr = `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
                 }
 
+                // 📦 解析品項字串為 Checkbox 條列式 HTML
+                // 預防萬一：先將字串以逗號或空格切開，並去除空白
+                const itemsArray = order.items.split(/[,，、]/).map(i => i.trim()).filter(i => i.length > 0);
+                let checklistHtml = '<div class="checklist-container">';
+                
+                itemsArray.forEach((item, index) => {
+                    // 如果卡片本身的狀態就是已完成，Checkbox 預設就直接打勾
+                    const isChecked = order.status === "已完成" ? "checked" : "";
+                    checklistHtml += `
+                        <label class="checklist-item">
+                            <input type="checkbox" ${isChecked}>
+                            <span>${item}</span>
+                        </label>
+                    `;
+                });
+                checklistHtml += '</div>';
+
                 const card = document.createElement('div');
                 card.className = `order-card ${statusClass}`;
                 card.innerHTML = `
@@ -308,7 +360,7 @@
                         <span class="status-badge">${order.status}</span>
                     </div>
                     <div class="card-body">
-                        <div class="items-title">${order.items}</div>
+                        ${checklistHtml}
                         ${order.notes ? `<div class="notes-text">💡 備註：${order.notes}</div>` : ''}
                     </div>
                     <div class="card-actions">
