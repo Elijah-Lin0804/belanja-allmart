@@ -57,6 +57,31 @@
         .boss-action { margin-top: 20px; text-align: center; }
         .btn-boss { background-color: #28a745; color: white; border: none; width: 100%; padding: 12px; font-size: 1.1rem; font-weight: bold; border-radius: 6px; cursor: pointer; }
         .btn-boss:disabled { background-color: #6c757d; cursor: not-allowed; }
+
+        /* 修改你原本的 .footer-action，加上 transition 讓動畫變流暢 */
+        .footer-action { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            background: white; 
+            padding: 12px; 
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.1); 
+            text-align: center; 
+            z-index: 90; 
+            transition: transform 0.3s ease, opacity 0.3s ease; /* 新增：讓消失跟出現很平滑 */
+        }
+
+        /* 新增：隱藏狀態的樣式 */
+        .footer-action.hide {
+            transform: translateY(100%); /* 往螢幕下方推走 */
+            opacity: 0;                  /* 變透明 */
+            pointer-events: none;        /* 隱藏時防止誤觸 */
+        }
+
+        /* 既有的 .btn-submit 保持不變 */
+        .btn-submit { background-color: #e60012; color: white; border: none; width: 100%; max-width: 500px; padding: 12px; font-size: 1.2rem; font-weight: bold; border-radius: 25px; cursor: pointer; }
+        .btn-submit:active { background-color: #b8000e; }
     </style>
 </head>
 <body>
@@ -509,6 +534,7 @@
 
             // 平滑滾動到確認區
             summarySection.scrollIntoView({ behavior: 'smooth' });
+            document.querySelector('.footer-action').classList.add('hide');
         }
 
         // 3. 將資料傳送到 Google 試算表（含自動清空功能）
@@ -565,7 +591,7 @@
                 setTimeout(() => {
                     document.getElementById('summarySection').style.display = "none";
                     window.scrollTo({ top: 0, behavior: 'smooth' }); // 自動滾回最上方
-                }, 2000);
+                }, 4000);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -577,6 +603,27 @@
                 alert("傳送失敗，請檢查網路連線。");
             });
         }
+
+        // 監聽滾動事件：往上滑回選擇品項時重新顯示按鈕
+        window.addEventListener('scroll', function() {
+            const footerAction = document.querySelector('.footer-action');
+            const summarySection = document.getElementById('summarySection');
+            
+            // 如果清單目前是顯示狀態 (display 不是 none)
+            if (summarySection && summarySection.style.display !== 'none') {
+                // 取得清單區塊距離網頁頂部的絕對距離
+                const rect = summarySection.getBoundingClientRect();
+                
+                // rect.top 是清單頂部距離目前螢幕頂端的距離
+                // window.innerHeight 是瀏覽器可視視窗的高度
+                // 如果 rect.top > window.innerHeight * 0.8，代表清單已經滑到螢幕下方了（使用者滑上去了）
+                if (rect.top > window.innerHeight * 0.8) {
+                    footerAction.classList.remove('hide'); // 重新顯示按鈕
+                } else {
+                    footerAction.classList.add('hide');    // 依然在清單範圍內，保持隱藏
+                }
+            }
+        });
     </script>
 </body>
 </html>
