@@ -49,9 +49,10 @@ git add index.html
 git commit -m "update: 微調食材品項名稱"
 git push
 
-2. 後台 Apps Script 原始碼備忘
+```
+### 2. 後台 Apps Script 原始碼備忘
 若不小心刪除 Google 試算表的指令碼，請重新將以下程式碼貼入「擴充功能 -> Apps Script」：
-
+```bash
 JavaScript
 function doPost(e) {
   try {
@@ -62,13 +63,12 @@ function doPost(e) {
   } catch(error) {
     return ContentService.createTextOutput(JSON.stringify({"status": "error", "message": error.toString()})).setMimeType(ContentService.MimeType.JSON);
   }
-}`
+}
+```
 
 ※ 重新部署時，務必將權限設為「所有人 (Anyone)」，並更新 index.html 中的網址。
 
-📝 未來優化目標 (To-Do List)
-[ ] 試算表優化：建立「狀態」欄位的下拉式選單（未處理/採購中/已完成），並設定條件式格式自動變色。
-
-[ ] 主動通知機制：串接 LINE Notify，當看護送出清單時，雇主手機可即時收到 LINE 叮咚通知。
-
-[ ] 多語系擴充：預留未來若有英文或其他語系需求的彈性架構。
+## 📝 未來優化目標 (To-Do List)
+### [ ] 試算表優化：建立「狀態」欄位的下拉式選單（未處理/採購中/已完成），並設定條件式格式自動變色。
+### [ ] 主動通知機制：串接 LINE Notify，當看護送出清單時，雇主手機可即時收到 LINE 叮咚通知。
+### [ ] 多語系擴充：預留未來若有英文或其他語系需求的彈性架構。
