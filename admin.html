@@ -185,6 +185,49 @@
             margin-top: 12px;
             border-left: 4px solid #ccc;
         }
+        /* 新增：卡片頂部的總數量大徽章 */
+        .card-total-badge {
+            display: inline-block;
+            background-color: #27ae60; /* 漂亮的翠綠色，代表這張卡片的統計 */
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 20px; /* 膠囊狀圓角 */
+            margin-bottom: 14px; /* 與下方勾選清單隔開 */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* 檢查清單外層容器 */
+        .checklist-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* 每個勾選品項的標籤（恢復成清爽的一行排版） */
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0;
+            padding: 4px 0;
+        }
+
+        /* 核取方塊本體樣式 */
+        .checklist-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        /* 品項文字樣式 */
+        .checklist-item span {
+            font-weight: 500;
+            color: #333;
+        }
 
         /* 動作按鈕區 */
         .card-actions {
@@ -337,12 +380,24 @@
 
                 // 📦 解析品項字串為 Checkbox 條列式 HTML
                 // 預防萬一：先將字串以逗號或空格切開，並去除空白
-                const itemsArray = order.items.split(/[,，、]/).map(i => i.trim()).filter(i => i.length > 0);
-                let checklistHtml = '<div class="checklist-container">';
-                
+                const itemsArray = order.items.split(/[,，、\n]/).map(i => i.trim()).filter(i => i.length > 0);
+
+                // 1. 🔢 取得這張卡片的品項總總數
+                const totalItemsCount = itemsArray.length;
+
+                // 2. 在外層容器一開頭，直接塞入一個明顯的「總數量標示」
+                let checklistHtml = `
+                    <div class="card-total-badge">
+                        📦 本單採購總計：${totalItemsCount} 項品項
+                    </div>
+                    <div class="checklist-container">
+                `;
+
                 itemsArray.forEach((item, index) => {
-                    // 如果卡片本身的狀態就是已完成，Checkbox 預設就直接打勾
-                    const isChecked = order.status === "已完成" ? "checked" : "";
+                    // 狀態預設打勾判斷
+                    const isChecked = order.status === "complete" || order.status === "已完成" ? "checked" : "";
+                    
+                    // 3. 🎯 恢復乾淨清爽的單行核取方塊
                     checklistHtml += `
                         <label class="checklist-item">
                             <input type="checkbox" ${isChecked}>
@@ -350,7 +405,8 @@
                         </label>
                     `;
                 });
-                checklistHtml += '</div>';
+
+                checklistHtml += '</div>'; // 關閉 checklist-container
 
                 const card = document.createElement('div');
                 card.className = `order-card ${statusClass}`;

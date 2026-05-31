@@ -1,86 +1,57 @@
 # 🛒 Belanja Allmart - 印尼看護雲端採購系統
 
-一個專為家庭打造的跨語言對照採購網頁。旨在解決雇主與印尼看護之間因語言隔閡導致的食材、生活用品採購溝通痛點，並結合雲端資料庫實現無紙化、跨裝置的狀態管理。
+一個專為家庭打造的跨語言對照採購網頁。旨在解決雇主與印尼看護之間因語言隔閡導致的食材、生活用品採購溝通痛點，並結合雲端資料庫實現無紙化、跨裝置的狀態管理與即時核對。
 
 ---
 
 ## 🎯 核心痛點解決
-- **語言雙語對照**：所有品項皆有印尼文（Bahasa Indonesia）與中文雙語對照，方便看護點選，也方便雇主核對。
-- **防止溝通遺漏**：看護隨時可在手機上勾選需求並填寫備註，一鍵送出，告別傳統紙筆容易遺失的問題。
-- **免伺服器成本**：100% 利用免費雲端資源（GitHub Pages + Google Sheets）架設，達成商業級全端系統的流暢體驗。
+
+* **語言雙語對照**：所有品項皆有印尼文（Bahasa Indonesia）與中文雙語對照，方便看護點選，也方便雇主直接核對。
+* **防止溝通遺漏**：看護隨時可在手機上勾選需求、調整數量並填寫備註，一鍵送出，告別傳統紙筆容易遺失或看不懂字跡的問題。
+* **免伺服器成本**：100% 利用免費雲端資源（GitHub Pages + Google Sheets）架設，達成商業級全端系統的流暢體驗。
+* **直覺式雇主後台**：專為手機閱讀設計的大字體卡片管理介面，自動統計採購總量，讓長輩或雇主一目了然。
 
 ---
 
 ## 🛠️ 技術棧 (Tech Stack)
-- **Frontend**: HTML5, CSS3 (響應式手機介面), JavaScript (Vanilla JS)
-- **Deployment**: GitHub Pages
-- **Backend / Database**: Google Apps Script (GAS) + Google Sheets API
+
+* **Frontend**：HTML5、CSS3（全手機響應式 Flexbox 佈局）、Vanilla JavaScript（原生 JS）
+* **Database / Backend**：Google Sheets API + Google Apps Script (GAS) 雲端 Web App
+* **Deployment**：GitHub Pages 免費靜態網頁託管
 
 ---
 
-## 📊 系統架構與資料流 (Data Flow)
+## 📊 系統架構與最新資料流 (Data Flow)
 
-本系統採用「雙前端、單後端整合」的免伺服器成本架構：
-
-1. 看護端操作：於手機瀏覽器打開 `index.html` (GitHub Pages)，勾選品項、填寫備註並送出 (POST)。
-2. 雇主端管理：於手機/電腦打開 `admin.html` (GitHub Pages)，輸入前端暗號解鎖後，即時讀取 (GET) 雲端清單。
-3. 雲端資料庫：Google Apps Script (GAS) 作為後端 API 樞紐，負責處理：
-   - 寫入新採購需求（來自看護端）
-   - 讀取並打包歷史清單成 JSON 格式（來自雇主端）
-   - 根據特定列號 (Row) 變更採購狀態欄位（來自雇主端）
-
----
-
-## 🔗 重要連結備忘 (Links)
-> ⚠️ *注意：請妥善保管此說明書，切勿流出 Web App URL 以防資料庫遭惡意寫入。*
-
-- **前台網頁網址 (GitHub Pages)**: `https://elijah-lin0804.github.io/belanja-allmart/`
-- **後台資料庫 (Google Sheets)**: `[請貼上您的 Google 試算表瀏覽連結]`
-- **Google Web App URL (API)**: `https://script.google.com/macros/s/.../exec`
+1.  **看護端操作**：於手機瀏覽器打開 GitHub Pages 網址，勾選品項、填寫備註（支援多品項同時複選）。
+2.  **前端防呆驗證**：JavaScript 檢查是否至少選取一項或填寫備註，通過後封裝資料並送出。
+3.  **雲端傳輸**：前端利用 `Fetch API` 發送 `POST` 請求至 Google Apps Script 部署網址。
+4.  **資料庫寫入**：GAS 接收 JSON 資料，自動將「時間戳記、採購品項、備註、處理狀態（預設未處理）」寫入試算表。
+5.  **雇主端渲染 (`admin.html`)**：
+    * 進入後台需輸入安全通關密碼。
+    * 系統自動讀取試算表資料，將文字品項利用正規表達式精準拆分。
+    * **【今日優化】** 每張採購卡片頂部會自動計算並顯示明顯的 **`📦 本單採購總計：X 項品項`** 綠色膠囊徽章，卡片內則生成清爽的單行核取清單供雇主採購時勾選確認。
 
 ---
 
-## 🚀 部署與維護指南 (Deployment & Maintenance)
+## ✨ 雇主端後台功能亮點 (`admin.html`)
 
-### 1. 本地開發與更新
-若需要修改食材品項、微調介面，請於本地修改 `index.html`，並使用 Git 進行版本控制：
-```bash
-# 檢查狀態
-git status
+* 🔒 **安全防護**：具備前端密碼鎖驗證功能，保護家庭採購隱私。
+* 📱 **響應式卡片設計**：拋棄傳統密密麻麻的表格，改用適合手機查看與點擊的大字體卡片。
+* 🎨 **狀態色彩管理**：
+    * `未處理`（淡黃色卡片）
+    * `採購中`（淡藍色卡片）
+    * `已完成`（淡灰色卡片，且內部品項核取方塊會自動預設打勾）
+* 📊 **總量智慧統計**：卡片頂部獨立 CSS 徽章標示，一眼抓出該單採購規模。
+* 🔄 **雙向同步**：點擊卡片狀態按鈕直接發送請求更新 Google Sheets 狀態，不需重整網頁。
 
-# 提交並推送到 GitHub (Pages 會在 1 分鐘內自動更新)
-git add index.html
-git commit -m "update: 微調食材品項名稱"
-git push
+---
 
-```
-### 2. 後台 Apps Script 原始碼備忘
-若不小心刪除 Google 試算表的指令碼，請重新將以下程式碼貼入「擴充功能 -> Apps Script」：
-```bash
-JavaScript
-function doPost(e) {
-  try {
-    var params = JSON.parse(e.postData.contents);
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    sheet.appendRow([params.timestamp, params.items, params.notes, "未處理"]);
-    return ContentService.createTextOutput(JSON.stringify({"status": "success"})).setMimeType(ContentService.MimeType.JSON);
-  } catch(error) {
-    return ContentService.createTextOutput(JSON.stringify({"status": "error", "message": error.toString()})).setMimeType(ContentService.MimeType.JSON);
-  }
-}
-```
+## 📅 開發里程碑與日後優化目標 (To-Do List)
 
-※ 重新部署時，務必將權限設為「所有人 (Anyone)」，並更新 index.html 中的網址。
-
-## 📝 未來優化目標 (To-Do List)
-- [ ] 試算表優化：建立「狀態」欄位的下拉式選單（未處理/採購中/已完成），並設定條件式格式自動變色。
-- [ ] 主動通知機制：串接 LINE Notify，當看護送出清單時，雇主手機可即時收到 LINE 叮咚通知。
-- [ ] 多語系擴充：預留未來若有英文或其他語系需求的彈性架構。
-
-### 🔄 已完成優化紀錄 (Changelog)
-- [x] (2026/05) 底部發送按鈕動態顯示邏輯：解決確認清單與選擇品項同時出現的視覺混淆，支援滾動自動隱藏與恢復。 
-- [x] **前端優化**：新增底部選單「自動防遮擋與滾動動態隱藏邏輯」，全面提升行動裝置看品項時的視覺可視範圍。
-- [x] **全端升級**：建立 `admin.html` 雇主專屬後台管理網頁。
-  - 實作前端密碼鎖機制，保障家庭採購隱私。
-  - 採用卡片式響應式排版，支援【未處理】、【採購中】、【已完成】一鍵即時同步 Google 試算表。
-  - 升級後端 GAS，打通 `doGet` 與 `doPost` 的雙向 API 溝通。
+* [x] 建立前台看護雙語點選功能與基本防呆
+* [x] 串接 Google Sheets 與 Google Apps Script 實現雲端資料儲存
+* [x] 建立雇主端 `admin.html` 密碼鎖與卡片式狀態管理
+* [x] **【當前進度】** 優化雇主端品項拆分邏輯，並於卡片頂部獨立出總採購數量徽章（提升視覺體驗）
+* [ ] 考慮加入歷史紀錄封存功能，避免過期字串卡片堆積
+* [ ] 持續優化 UI 視覺細節，讓長輩操作更不費力
