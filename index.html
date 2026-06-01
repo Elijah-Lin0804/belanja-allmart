@@ -87,16 +87,16 @@
 <body>
 
     <header>
-        <h1>Pilih Barang (選擇需要的物資)</h1>
+    <h1>Pilih Barang (選擇需要的物資)</h1>
     </header>
 
     <div class="container">
         
-        <div class="category-title">1. Daging & Protein (肉類與蛋白質)</div>
+        <div class="category-title">1. Sayuran Segar (新鮮蔬菜)</div>
         
-        <div class="item-card" data-name="Daging Ayam (雞肉)">
+        <div class="item-card" data-name="Bayam (菠菜)">
             <div class="item-info">
-                <div class="item-name-id">Daging Ayam</div><div class="item-name-zh">雞肉</div>
+                <div class="item-name-id">Bayam</div><div class="item-name-zh">菠菜</div>
             </div>
             <div class="counter">
                 <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
@@ -105,9 +105,9 @@
             </div>
         </div>
 
-        <div class="item-card" data-name="Daging Sapi (牛肉)">
+        <div class="item-card" data-name="Kale (羽衣甘藍)">
             <div class="item-info">
-                <div class="item-name-id">Daging Sapi</div><div class="item-name-zh">牛肉</div>
+                <div class="item-name-id">Kale</div><div class="item-name-zh">羽衣甘藍</div>
             </div>
             <div class="counter">
                 <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
@@ -116,9 +116,9 @@
             </div>
         </div>
 
-        <div class="item-card" data-name="Telur Ayam (雞蛋)">
+        <div class="item-card" data-name="Brokoli (青花菜)">
             <div class="item-info">
-                <div class="item-name-id">Telur Ayam</div><div class="item-name-zh">雞蛋</div>
+                <div class="item-name-id">Brokoli</div><div class="item-name-zh">青花菜</div>
             </div>
             <div class="counter">
                 <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
@@ -126,41 +126,6 @@
                 <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
             </div>
         </div>
-
-        <div class="item-card" data-name="Tahu (豆腐)">
-            <div class="item-info">
-                <div class="item-name-id">Tahu</div><div class="item-name-zh">豆腐</div>
-            </div>
-            <div class="counter">
-                <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
-                <div class="count-value">0</div>
-                <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
-            </div>
-        </div>
-
-        <div class="item-card" data-name="Tahu Kering (豆干)">
-            <div class="item-info">
-                <div class="item-name-id">Tahu Kering</div><div class="item-name-zh">豆干</div>
-            </div>
-            <div class="counter">
-                <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
-                <div class="count-value">0</div>
-                <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
-            </div>
-        </div>
-
-        <div class="item-card" data-name="Ikan / Makanan Laut (魚類/海鮮)">
-            <div class="item-info">
-                <div class="item-name-id">Ikan / Makanan Laut</div><div class="item-name-zh">魚類/海鮮</div>
-            </div>
-            <div class="counter">
-                <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
-                <div class="count-value">0</div>
-                <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
-            </div>
-        </div>
-
-        <div class="category-title">2. Sayuran Hijau (葉菜類)</div>
 
         <div class="item-card" data-name="Kubis / Kol (高麗菜)">
             <div class="item-info">
@@ -184,9 +149,9 @@
             </div>
         </div>
 
-        <div class="item-card" data-name="Sawi Sendok / Pakcoy (青江菜)">
+        <div class="item-card" data-name="Jagung (玉米)">
             <div class="item-info">
-                <div class="item-name-id">Sawi Sendok / Pakcoy</div><div class="item-name-zh">青江菜</div>
+                <div class="item-name-id">Jagung</div><div class="item-name-zh">玉米</div>
             </div>
             <div class="counter">
                 <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
@@ -194,30 +159,6 @@
                 <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
             </div>
         </div>
-
-        <div class="item-card" data-name="Sawi Putih (大/小白菜)">
-            <div class="item-info">
-                <div class="item-name-id">Sawi Putih</div><div class="item-name-zh">大/小白菜</div>
-            </div>
-            <div class="counter">
-                <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
-                <div class="count-value">0</div>
-                <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
-            </div>
-        </div>
-
-        <div class="item-card" data-name="Brokoli (花椰菜)">
-            <div class="item-info">
-                <div class="item-name-id">Brokoli</div><div class="item-name-zh">花椰菜</div>
-            </div>
-            <div class="counter">
-                <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
-                <div class="count-value">0</div>
-                <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
-            </div>
-        </div>
-
-        <div class="category-title">3. Sayuran Akar & Labu (根莖與瓜果類)</div>
 
         <div class="item-card" data-name="Kentang (馬鈴薯)">
             <div class="item-info">
@@ -241,6 +182,17 @@
             </div>
         </div>
 
+        <div class="item-card" data-name="Jamur (菇類)">
+            <div class="item-info">
+                <div class="item-name-id">Jamur</div><div class="item-name-zh">菇類</div>
+            </div>
+            <div class="counter">
+                <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
+                <div class="count-value">0</div>
+                <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
+            </div>
+        </div>
+
         <div class="item-card" data-name="Bawang Bombay (洋蔥)">
             <div class="item-info">
                 <div class="item-name-id">Bawang Bombay</div><div class="item-name-zh">洋蔥</div>
@@ -252,9 +204,9 @@
             </div>
         </div>
 
-        <div class="item-card" data-name="Timun / Tomat / Jagung (黃瓜/番茄/玉米)">
+        <div class="item-card" data-name="Bawang Putih (大蒜)">
             <div class="item-info">
-                <div class="item-name-id">Timun / Tomat / Jagung</div><div class="item-name-zh">瓜果類 (黃瓜/番茄/玉米)</div>
+                <div class="item-name-id">Bawang Putih</div><div class="item-name-zh">大蒜</div>
             </div>
             <div class="counter">
                 <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
@@ -263,11 +215,9 @@
             </div>
         </div>
 
-        <div class="category-title">4. Jamur & Bumbu (菇類與辛香料)</div>
-
-        <div class="item-card" data-name="Jamur (香菇/金針菇/杏鮑菇)">
+        <div class="item-card" data-name="Jahe (生薑)">
             <div class="item-info">
-                <div class="item-name-id">Jamur</div><div class="item-name-zh">菇類 (香菇/金針菇/杏鮑菇)</div>
+                <div class="item-name-id">Jahe</div><div class="item-name-zh">生薑</div>
             </div>
             <div class="counter">
                 <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
@@ -276,9 +226,12 @@
             </div>
         </div>
 
-        <div class="item-card" data-name="Bumbu (大蒜/紅蔥頭/生薑/辣椒)">
+
+        <div class="category-title">2. Daging & Seafood (肉類與海鮮加工)</div>
+
+        <div class="item-card" data-name="Daging Ayam (雞肉)">
             <div class="item-info">
-                <div class="item-name-id">Bawang Putih / Merah / Cabai</div><div class="item-name-zh">辛香料 (蒜/蔥/薑/辣椒)</div>
+                <div class="item-name-id">Daging Ayam</div><div class="item-name-zh">雞肉</div>
             </div>
             <div class="counter">
                 <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
@@ -287,11 +240,9 @@
             </div>
         </div>
 
-        <div class="category-title">5. Buah-buahan (水果類)</div>
-
-        <div class="item-card" data-name="Buah (香蕉/蘋果/芭樂/橘子...)">
+        <div class="item-card" data-name="Daging Sapi (牛肉)">
             <div class="item-info">
-                <div class="item-name-id">Buah-buahan</div><div class="item-name-zh">水果類 (香蕉/蘋果/芭樂...)</div>
+                <div class="item-name-id">Daging Sapi</div><div class="item-name-zh">牛肉</div>
             </div>
             <div class="counter">
                 <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
@@ -300,7 +251,110 @@
             </div>
         </div>
 
-        <div class="category-title">6. Makanan Pokok & Minyak (主食與油鹽)</div>
+        <div class="item-card" data-name="Bakso Ikan (魚丸)">
+            <div class="item-info">
+                <div class="item-name-id">Bakso Ikan</div><div class="item-name-zh">魚丸</div>
+            </div>
+            <div class="counter">
+                <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
+                <div class="count-value">0</div>
+                <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="item-card" data-name="Ikan (魚)">
+            <div class="item-info">
+                <div class="item-name-id">Ikan</div><div class="item-name-zh">魚</div>
+            </div>
+            <div class="counter">
+                <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
+                <div class="count-value">0</div>
+                <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="item-card" data-name="Udang (蝦子)">
+            <div class="item-info">
+                <div class="item-name-id">Udang</div><div class="item-name-zh">蝦子</div>
+            </div>
+            <div class="counter">
+                <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
+                <div class="count-value">0</div>
+                <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="item-card" data-name="Tahu (豆腐)">
+            <div class="item-info">
+                <div class="item-name-id">Tahu</div><div class="item-name-zh">豆腐</div>
+            </div>
+            <div class="counter">
+                <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
+                <div class="count-value">0</div>
+                <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
+            </div>
+        </div>
+
+
+        <div class="category-title">3. Telur & Produk Susu (蛋類與乳製品)</div>
+
+        <div class="item-card" data-name="Telur Ayam (雞蛋)">
+            <div class="item-info">
+                <div class="item-name-id">Telur Ayam</div><div class="item-name-zh">雞蛋</div>
+            </div>
+            <div class="counter">
+                <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
+                <div class="count-value">0</div>
+                <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="item-card" data-name="Susu Segar (鮮奶)">
+            <div class="item-info">
+                <div class="item-name-id">Susu Segar</div><div class="item-name-zh">鮮奶</div>
+            </div>
+            <div class="counter">
+                <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
+                <div class="count-value">0</div>
+                <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="item-card" data-name="Keju (起司)">
+            <div class="item-info">
+                <div class="item-name-id">Keju</div><div class="item-name-zh">起司</div>
+            </div>
+            <div class="counter">
+                <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
+                <div class="count-value">0</div>
+                <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="item-card" data-name="Yogurt (優格)">
+            <div class="item-info">
+                <div class="item-name-id">Yogurt</div><div class="item-name-zh">優格</div>
+            </div>
+            <div class="counter">
+                <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
+                <div class="count-value">0</div>
+                <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
+            </div>
+        </div>
+
+
+        <div class="category-title">4. Roti & Bahan Pokok (麵包與主食)</div>
+
+        <div class="item-card" data-name="Roti (吐司)">
+            <div class="item-info">
+                <div class="item-name-id">Roti</div><div class="item-name-zh">吐司</div>
+            </div>
+            <div class="counter">
+                <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
+                <div class="count-value">0</div>
+                <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
+            </div>
+        </div>
 
         <div class="item-card" data-name="Beras (白米)">
             <div class="item-info">
@@ -313,9 +367,9 @@
             </div>
         </div>
 
-        <div class="item-card" data-name="Mie Instan Halal (印尼泡麵/營多麵)">
+        <div class="item-card" data-name="Mie Instan (泡麵)">
             <div class="item-info">
-                <div class="item-name-id">Mie Instan (Halal)</div><div class="item-name-zh">印尼泡麵 (營多麵)</div>
+                <div class="item-name-id">Mie Instan</div><div class="item-name-zh">泡麵</div>
             </div>
             <div class="counter">
                 <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
@@ -324,9 +378,9 @@
             </div>
         </div>
 
-        <div class="item-card" data-name="Minyak / Garam / Gula (油/鹽/糖)">
+        <div class="item-card" data-name="Mie (麵條)">
             <div class="item-info">
-                <div class="item-name-id">Minyak / Garam / Gula</div><div class="item-name-zh">調味與油 (油/鹽/糖)</div>
+                <div class="item-name-id">Mie</div><div class="item-name-zh">麵條</div>
             </div>
             <div class="counter">
                 <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
@@ -336,11 +390,11 @@
         </div>
 
 
-        <div class="category-title">7. Kebersihan Diri & Mandi (個人衛生與洗沐)</div>
+        <div class="category-title">5. Bumbu Dasar (基本調味料)</div>
 
-        <div class="item-card" data-name="Sampo / Sabun Mandi (洗髮精/沐浴乳/肥皂)">
+        <div class="item-card" data-name="Minyak Goreng (食用油)">
             <div class="item-info">
-                <div class="item-name-id">Sampo / Sabun Mandi</div><div class="item-name-zh">洗沐 (洗髮精/沐浴乳/肥皂)</div>
+                <div class="item-name-id">Minyak Goreng</div><div class="item-name-zh">食用油</div>
             </div>
             <div class="counter">
                 <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
@@ -349,9 +403,9 @@
             </div>
         </div>
 
-        <div class="item-card" data-name="Sabun Cuci Muka (洗面乳)">
+        <div class="item-card" data-name="Garam (鹽)">
             <div class="item-info">
-                <div class="item-name-id">Sabun Cuci Muka</div><div class="item-name-zh">洗面乳</div>
+                <div class="item-name-id">Garam</div><div class="item-name-zh">鹽</div>
             </div>
             <div class="counter">
                 <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
@@ -360,9 +414,9 @@
             </div>
         </div>
 
-        <div class="item-card" data-name="Pasta & Sikat Gigi (牙膏/牙刷)">
+        <div class="item-card" data-name="Gula (糖)">
             <div class="item-info">
-                <div class="item-name-id">Pasta & Sikat Gigi</div><div class="item-name-zh">牙膏/牙刷 (無豬鬃毛)</div>
+                <div class="item-name-id">Gula</div><div class="item-name-zh">糖</div>
             </div>
             <div class="counter">
                 <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
@@ -371,9 +425,9 @@
             </div>
         </div>
 
-        <div class="item-card" data-name="Pembalut Wanita (衛生棉)">
+        <div class="item-card" data-name="Kecap Asin (醬油)">
             <div class="item-info">
-                <div class="item-name-id">Pembalut Wanita</div><div class="item-name-zh">衛生棉 (日用/夜用)</div>
+                <div class="item-name-id">Kecap Asin</div><div class="item-name-zh">醬油</div>
             </div>
             <div class="counter">
                 <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
@@ -382,11 +436,9 @@
             </div>
         </div>
 
-        <div class="category-title">8. Mencuci & Kebersihan Rumah (洗衣與家事清潔)</div>
-
-        <div class="item-card" data-name="Deterjen / Pelembut (洗衣精/柔軟精)">
+        <div class="item-card" data-name="Cuka (醋)">
             <div class="item-info">
-                <div class="item-name-id">Deterjen / Pelembut</div><div class="item-name-zh">洗衣精/柔軟精</div>
+                <div class="item-name-id">Cuka</div><div class="item-name-zh">醋</div>
             </div>
             <div class="counter">
                 <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
@@ -394,6 +446,31 @@
                 <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
             </div>
         </div>
+
+        <div class="item-card" data-name="Arak Masak (米酒)">
+            <div class="item-info">
+                <div class="item-name-id">Arak Masak</div><div class="item-name-zh">米酒</div>
+            </div>
+            <div class="counter">
+                <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
+                <div class="count-value">0</div>
+                <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="item-card" data-name="Lada Putih (白胡椒粉)">
+            <div class="item-info">
+                <div class="item-name-id">Lada Putih</div><div class="item-name-zh">白胡椒粉</div>
+            </div>
+            <div class="counter">
+                <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
+                <div class="count-value">0</div>
+                <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
+            </div>
+        </div>
+
+
+        <div class="category-title">6. Perlengkapan Rumah Tangga (居家生活用品)</div>
 
         <div class="item-card" data-name="Sabun Cuci Piring (洗碗精)">
             <div class="item-info">
@@ -406,9 +483,9 @@
             </div>
         </div>
 
-        <div class="item-card" data-name="Taku Kertas / Tisu (衛生紙/廚房紙巾)">
+        <div class="item-card" data-name="Deterjen Pakaian (洗衣精)">
             <div class="item-info">
-                <div class="item-name-id">Tisu Wajah / Dapur</div><div class="item-name-zh">衛生紙/廚房紙巾</div>
+                <div class="item-name-id">Deterjen Pakaian</div><div class="item-name-zh">洗衣精</div>
             </div>
             <div class="counter">
                 <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
@@ -417,9 +494,9 @@
             </div>
         </div>
 
-        <div class="item-card" data-name="Plastik Sampah (垃圾袋)">
+        <div class="item-card" data-name="Tisu (衛生紙)">
             <div class="item-info">
-                <div class="item-name-id">Plastik Sampah</div><div class="item-name-zh">垃圾袋 (大/中/小)</div>
+                <div class="item-name-id">Tisu</div><div class="item-name-zh">衛生紙</div>
             </div>
             <div class="counter">
                 <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
@@ -427,6 +504,19 @@
                 <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
             </div>
         </div>
+
+        <div class="item-card" data-name="Kantong Plastik Sampah (垃圾袋)">
+            <div class="item-info">
+                <div class="item-name-id">Kantong Plastik Sampah</div><div class="item-name-zh">垃圾袋</div>
+            </div>
+            <div class="counter">
+                <button class="btn-calc btn-minus" onclick="changeCount(this, -1)">-</button>
+                <div class="count-value">0</div>
+                <button class="btn-calc btn-plus" onclick="changeCount(this, 1)">+</button>
+            </div>
+        </div>
+
+    </div>
 
         <div class="notes-section">
             <div class="notes-label">Catatan Tambahan (其他需要的東西或備註)：</div>
